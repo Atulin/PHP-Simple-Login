@@ -1,5 +1,7 @@
 <?php
-class Db {
+
+class Db
+{
     private PDO $conn;
 
     /**
@@ -9,13 +11,17 @@ class Db {
     public function __construct()
     {
         // Uncomment for SQLite connection
-        // $this->conn = new PDO("sqlite:".__DIR__."/database.sql");
+        // $this->conn = new PDO('sqlite:' . __DIR__ . '/database.sql');
 
-        // Preferably take those from some .env file
-        $servername = "localhost";
-        $username = "username";
-        $password = "password";
-        $dbname = 'MyDB';
+        // Load an .ini file that contains connection details
+        $ini = parse_ini_file(__DIR__ . '/dbdata.ini');
+
+        // Extract the data from there.
+        // It's optional, really, the `$ini` array can be used directly.
+        $servername = $ini['db_server'];
+        $username   = $ini['db_user'];
+        $password   = $ini['db_password'];
+        $dbname     = $ini['db_name'];
 
         // Connection proper
         try {
@@ -30,7 +36,7 @@ class Db {
     /**
      * @return PDO
      */
-    public function getConn() : PDO
+    public function getConn(): PDO
     {
         return $this->conn;
     }
