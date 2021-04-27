@@ -2,6 +2,9 @@
 
 class Db
 {
+    // Change to `true` to use SQLite file-based database
+    private const USE_SQLITE = false;
+
     private PDO $conn;
 
     /**
@@ -10,27 +13,32 @@ class Db
      */
     public function __construct()
     {
-        // Uncomment for SQLite connection
-        // $this->conn = new PDO('sqlite:' . __DIR__ . '/database.sql');
+        if (self::USE_SQLITE) {
+            $this->conn = new PDO('sqlite:' . __DIR__ . '/database.sql');
+        } else {
 
-        // Load an .ini file that contains connection details
-        $ini = parse_ini_file(__DIR__ . '/dbdata.ini');
+            // Load an .ini file that contains connection details
+            $ini = parse_ini_file(__DIR__ . '/dbdata.ini');
 
-        // Extract the data from there.
-        // It's optional, really, the `$ini` array can be used directly.
-        $servername = $ini['db_server'];
-        $username   = $ini['db_user'];
-        $password   = $ini['db_password'];
-        $dbname     = $ini['db_name'];
+            // Extract the data from there.
+            // It's optional, really, the `$ini` array can be used directly.
+            $servername = $ini['db_server'];
+            $username = $ini['db_user'];
+            $password = $ini['db_password'];
+            $dbname = $ini['db_name'];
 
-        // Connection proper
-        try {
-            $this->conn = new PDO("mysql:host={$servername};dbname={$dbname}", $username, $password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            throw $e;
+            // Connection proper
+            try {
+                // Create the PDO object
+                $this->conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+
+                // Make sure any errors will be shown
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            } catch (PDOException $e) {
+                throw $e;
+            }
         }
-
     }
 
     /**

@@ -9,4 +9,29 @@ $sql = 'CREATE TABLE users (
     password varchar(255) not null 
 )';
 
-$conn->exec($sql);
+$result = $conn->exec($sql);
+
+if ($result === false) {
+    $error = $conn->errorInfo();
+    echo <<<HTML
+        <h1>Something went wrong...</h1>
+        <table>
+            <tr>
+                <td>SQL error</td>
+                <td>$error[0]</td>
+            </tr>
+            <tr>
+                <td>Driver code</td>
+                <td>$error[1]</td>
+            </tr>
+            <tr>
+                <td>SQL error</td>
+                <td>$error[2]</td>
+            </tr>
+        </table>
+        HTML;
+
+
+} else {
+    echo 'Database initialized succesfully!';
+}
